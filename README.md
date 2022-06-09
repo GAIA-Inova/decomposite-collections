@@ -10,7 +10,7 @@ Bernardo Fontes, source code repository, 2021.
 This code has been developed by Bernardo Fontes, as part of the [»The Intelligent Museum«](#the-intelligent-museum). 
 Funded by the Digital Culture Programme of the Kulturstiftung des Bundes (German Federal Cultural Foundation). 
 Funded by the Beauftragte der Bundesregierung für Kultur und Medien (Federal Government Commissioner for Culture and Media).
-Supported by the Faculty of Architecture and Urbanism of the University of São Paulo (FAU-USP) C4Ai – INOVA-USP and GAIA.
+Supported by the Faculty of Architecture and Urbanism of the University of São Paulo (FAU-USP), C4Ai – INOVA-USP and GAIA.
 
 For information on usage and redistribution, and for a DISCLAIMER OF ALL WARRANTIES, see the file, [LICENSE.txt](LICENSE.txt), in this repository. 
 BSD Simplified License.
@@ -23,7 +23,7 @@ Description
 This README has the purpose to cover the required technical efforts in order to generate the results analyzed by the project.
 You can find a more detailed and conceptualized explanation about it in ZKM website, both in [German](https://zkm.de/de/decomposite-collections) or [English](https://zkm.de/en/decomposite-collections) versions.
 
-The overall technical goal was to train a dozen [GAN models](https://en.wikipedia.org/wiki/Generative_adversarial_network) to synthesize new images using the catalog 2 important Brazilian museums as the train dataset.
+The overall technical goal was to train a dozen [GAN models](https://en.wikipedia.org/wiki/Generative_adversarial_network) to synthesize new images based on the catalog of 2 important Brazilian museums as the train dataset.
 The museums are the Museu Paulista (MP USP) and the Contemporary Art Museum (MAC – USP).
 Each GAN was trained with dataset composed by grouped cuts from the original artworks from each museum. Each group represent a category we would like to investigate and experiment on top of.
 We defined a dozen of categories, but the ones used in this work are:
@@ -37,40 +37,42 @@ We defined a dozen of categories, but the ones used in this work are:
 - White Men
 - Indigenous
 
-Unfortunately, due to copyright requirements, we're not allowed to share the museums' catalog and neither the resulted datasets with the cuts grouped by these categories.
+Unfortunately, due to copyright requirements, we're not allowed to share the whole museums' catalog and neither the resulted datasets with the cuts grouped by these categories.
 So, this documentation will try to cover all the steps we needed to go through in order to have the final GAN models trained and to generate results from it.
+
+We strongly recommend you to try to reproduce this process with other open catalogs from museums all across the world.
 
 ### Step 1 - Organizing the artworks information
 
 In this step we had to view each image from the museum catalog and give meaning to specific areas. Or, in computer vision terms, to define an image's [bounding boxes](https://keymakr.com/blog/what-are-bounding-boxes/).
-These areas would them be used as the images cut and grouped by category. 
+These areas would them be cut and grouped by their meaning, what we call categories. 
 
-This step's final output was spreadsheet populated by the people who were working on it with the many possible bounding box per image. 
+This step's final output was a CSV spreadsheet populated by the people who worked on this analysis. The spreadsheet contains the many possible categories' bounding box per image. 
 The bounding boxes are defined by pixels coordinates, and we used [Image Map Generator website](https://www.image-map.net/) to help us to define them.
-Following we have an example of the spreadsheet header and one row formatted as a CSV:
+Following we have the spreadsheet's header and one row as an example:
 
 ```csv
 Tombo,Títulos do objeto,Autor,Data,Técnica,Dimensões,CONTROLE,Céu,Fauna,Flora,Artefatos domesticos,Homem Branco,Homem Indigena,Homem Negro,Mulher Branca,Mulher Indigena,Mulher Negra,TrabalhadorE rural,TrabalhadorE urbano,Paisagem Rural,Paisagem Urbana,Res. abastada,Res. pobre,Igreja
 1963.1.243,Costureiras,Tarsila do Amaral,1950 ,óleo sobre tela,"73,3 cm  x 100,2 cm ",,,"76,558,246,750",,"1,359,220,741&-1,662,278,872",,,,"694,340,1173,872&190,137,478,723&362,358,725,871&728,162,934,421&1019,80,1178,453&468,70,739,396&61,32,261,350&711,93,858,270&471,33,653,299&220,88,352,351",,"883,96,1091,437&572,242,858,485&-1,233,253,528",,"883,96,1091,437&572,242,858,485&-1,233,253,528&694,340,1173,872&190,137,478,723&362,358,725,871&728,162,934,421&1019,80,1178,453&468,70,739,396&61,32,261,350&711,93,858,270&471,33,653,299&220,88,352,351",,,,,,
 ```
 
-The row contains columns with information about the artwork, such as the title, the author, the painting technique used, and also one column per category we want to extract new cuts. 
+The row contains columns with information about the artwork, such as the title, the author, the painting technique used, and also one column per category that we want to crop. 
 The values under the categories columns are the 4 bounding box coordinates that should be used to cut the image. 
-The artwork image is the following one ("Costureiras", by brazilian artist [Tarsila do Amaral](https://en.wikipedia.org/wiki/Tarsila_do_Amaral)):
+The artwork image in the example is the following one ("Costureiras", by the brazilian artist [Tarsila do Amaral](https://en.wikipedia.org/wiki/Tarsila_do_Amaral)):
 
 ![Costureiras, Tarsila do Amaral](images/1963_1_243.jpg)
 
-So, in the previous example, we can cut a `Fauna` image using the following coordinates in pixels:
+So, in the previous example, it limits a `Fauna` bounding box using the following coordinates in pixels:
 
 - 76 (upper left)
 - 558 (bottom left)
 - 246 (upper right) 
 - 750 (bottom right)
 
-If there are more than one bounding box per category, the coordinates then get separated by the `&` character. As we have in the column for `Mulher Branca (White woman)`: `694,340,1173,872&190,137,478,723&362,358,725,871&728,162,934,421&1019,80,1178,453&468,70,739,396&61,32,261,350&711,93,858,270&471,33,653,299&220,88,352,351`. 
+If there are more than one bounding box per category, the coordinates then get separated by the `&` character, as we have in the column for `Mulher Branca (White woman)`: `694,340,1173,872&190,137,478,723&362,358,725,871&728,162,934,421&1019,80,1178,453&468,70,739,396&61,32,261,350&711,93,858,270&471,33,653,299&220,88,352,351`. 
 As you can see, there were defined 10 bounding boxes for white woman in this artwork.
 
-We acknowledge the work of our students and researchers in organizing the spreadsheets (one per museum) anh helping with the preparation work to build the dataset.
+We acknowledge the work of our students and researchers in organizing the spreadsheets (one per museum) and helping with the preparation work to build the dataset.
 
 Museum Paulista (MP USP):
 Amanda Chevtchouk Jurno, Amanda Vargas, Ana Paula Rodrigues Borges, Gabriel Pereira, Guilherme de Angelo Guimaraes da Silveira, Luisa Vasconcellos Rodrigues, Marco Antonio Christini, Matheus de Sousa Santos, Nathielli Ferreira Ricardo Raquel Serapicos, Carol Monteagudo, Deborah Oliveira Caseiro, Diego Giovani Bonifácio, Gabriel dos Santos Noda, Guilherme Bretas, Guilherme de Angelo Guimarães da Silveira, Guilherme Françoso Santos, Luiza Santos, Mariana Yoshimura, Natalia Bruciaferi Goncalves da Silva, Pedro Oliveira Perri, Roberta Saldanha da Silva Berardo Gomes, Rodrigo Augusto das Neves.
@@ -80,8 +82,8 @@ Gustavo Tiago Aires
 
 ### Step 2 - Creating the datasets
 
-Once we have the spreadsheet with all the bounding box information the next step is to crop the artworks to extract the images we want to use to train the GAN model. 
-In order to do that, there are a few Python scripts under the [`src` directory](src). 
+Once we have the spreadsheet with all the bounding boxes' information, the next step was to crop the artworks to extract the images we want to use to train the GAN model. 
+In order to do that, we used a few Python scripts that are placed under the [`src` directory](src). 
 
 #### Structure
 
@@ -93,7 +95,7 @@ If you want to customize the category columns, you'll have to edit `constants.CA
 
 #### Requirements
 
-You'll need to have Python and pip installed in your computer. Once you have both, you'll need to install Python dependencies as follows:
+You'll need to have [Python](https://www.python.org/) and [pip](https://pypi.org/project/pip/) installed in your computer. Once you have both, you'll need to install Python dependencies as follows:
 
 ```
 $ pip install requests rows pillow tqdm click
@@ -101,13 +103,13 @@ $ pip install requests rows pillow tqdm click
 
 #### Usage
 
-The `src/cli.py` file has a command called `bbox` that is responsible to crop the images using the bounding box coordinates and organize it under the directory defined by `constants.MOSAIC_DIR`. Here's how to use it:
+The `src/cli.py` file has a command called `bbox` that is responsible to crop the images using the bounding box coordinates and organize them under the directory defined by `constants.MOSAIC_DIR`. Here's how to use it:
 
 ```
 $ python src/cli.py bbox bounding_box.csv
 ```
 
-Besides organizing the artworks' cuts, it also creates a new CSV file that maps the final organization of the images. So, considering the row reference in the step 1, the `output.csv` file will look like:
+Besides organizing the artworks' cuts, it also creates a new CSV file to list the final organization of the images. So, considering the row reference in the step 1, the `output.csv` file will look like:
 
 ```
 Tombo,Categoria,Área,Títulos do objeto,Autor,Data,Técnica,Dimensões,Categoria Id,Imagem Id,Imagem
@@ -127,7 +129,7 @@ Tombo,Categoria,Área,Títulos do objeto,Autor,Data,Técnica,Dimensões,Categori
 1963.1.243,Mulher Negra,"-1,233,253,528",Costureiras,Tarsila do Amaral,1950 ,óleo sobre tela,"73,3 cm  x 100,2 cm ",mulher_negra,1963_1_243.jpg,1963.1.243-mulher_negra-02.jpg
 ```
 
-Each row in this file corresponds to a croped image and its respective information. Here are 2 examples of extraction from the previous image for the `Fauna` and `White woman` category:
+Each row in this file corresponds to a croped image and its respective information. Here are examples of extraction from the previous image for the `Fauna` and `White woman` category:
 
 **Fauna**
 
@@ -140,7 +142,7 @@ Each row in this file corresponds to a croped image and its respective informati
 
 #### Results
 
-The previous process resulted in us having datasets organized by category per each museum. The amount of images are listed in the table bellow:
+The previous process resulted in us having datasets organized by category for each museum. The amount of resulted images is listed in the table bellow:
 
 | Images per Category/Museum | MP USP | MAC-USP |
 |----------------------------|--------|---------|
