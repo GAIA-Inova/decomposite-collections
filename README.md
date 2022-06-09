@@ -153,9 +153,15 @@ The previous process resulted in us having datasets organized by category per ea
 | Black men                  | 199    | 89      |
 | Indigenous                 | 73     | 13      |
 
-### Step 3 - Training the GANs
+### Step 3 - Training and using the GANs
 
-### Step 4 - Generating results
+The next and final step was to train the 16 GAN, one for each dataset from the previous table, and generate the results. 
+
+To facilitate and standardize this process, we used [Runway app](https://runwayml.com/) ([this video](https://www.youtube.com/watch?v=vM8Cv8CLmr0) has a demo on how to do that). Each GAN we created is a result of a 8000 steps training of a [StyleGAN2](https://github.com/NVlabs/stylegan2) starting on a pre-trained model of botanical illustrations provided by Runway.
+
+With the trained model, we generate 200 images per category using the same truncation (0.65) and extract the results we used in the project. Bellow, you can see an overview of the gallery for the model trained with `Sky` images from MAC-USP:
+
+![Sky MAC-USP](images/ceu-mac-checkpoint.jpg)
 
 The Intelligent Museum
 ----------------------
