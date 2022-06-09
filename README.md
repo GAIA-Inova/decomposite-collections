@@ -1,6 +1,8 @@
 (De)composite Collections
 =========================
 
+![White man](images/sample_01.jpg)
+
 Bernardo Fontes, source code repository, 2021.
 
 »(De)composite Collections« is an ongoing investigation into the formation and updates of the colonialist gaze in museum collections. Developed in the context of the intelligent.museum residency, its starting point are artistic collections organized in the first half of the 20th century.
@@ -10,7 +12,7 @@ Funded by the Digital Culture Programme of the Kulturstiftung des Bundes (German
 Funded by the Beauftragte der Bundesregierung für Kultur und Medien (Federal Government Commissioner for Culture and Media).
 Supported by the Faculty of Architecture and Urbanism of the University of São Paulo (FAU-USP) C4Ai – INOVA-USP and GAIA.
 
-For information on usage and redistribution, and for a DISCLAIMER OF ALL WARRANTIES, see the file, "LICENSE.txt," in this repository. 
+For information on usage and redistribution, and for a DISCLAIMER OF ALL WARRANTIES, see the file, [LICENSE.txt](LICENSE.txt), in this repository. 
 BSD Simplified License.
 
 
