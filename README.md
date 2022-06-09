@@ -15,6 +15,38 @@ Supported by the Faculty of Architecture and Urbanism of the University of São 
 For information on usage and redistribution, and for a DISCLAIMER OF ALL WARRANTIES, see the file, [LICENSE.txt](LICENSE.txt), in this repository. 
 BSD Simplified License.
 
+Description
+-----------
+
+### Summary
+
+This README has the purpose to cover the required technical efforts in order to generate the results analyzed by the project.
+You can find a more detailed and conceptualized explanation about it in ZKM website, both in [German](https://zkm.de/de/decomposite-collections) or [English](https://zkm.de/en/decomposite-collections) versions.
+
+The overall technical goal was to train a dozen [GAN models](https://en.wikipedia.org/wiki/Generative_adversarial_network) to synthesize new images using the catalog 2 important Brazilian museums as the train dataset.
+The museums are the Museu Paulista (MP USP) and the Contemporary Art Museum (MAC – USP).
+Each GAN was trained with dataset composed by grouped cuts from the original artworks from each museum. Each group represent a category we would like to investigate and experiment on top of.
+The list of categories used in this work are:
+
+- Sky
+- Flora
+- Fauna
+- Black Women
+- White Women
+- Black Men
+- White Men
+- Indigenous
+
+Unfortunately, due to copyright requirements, we're not allowed to share the museums' catalog and neither the resulted datasets with the cuts grouped by these categories.
+So, this documentation will try to cover all the steps we needed to go through in order to have the final GAN models trained and to generate results from it.
+
+### Step 1 - Organizing the artworks information
+
+### Step 2 - Creating the dataset
+
+### Step 3 - Training the GANs
+
+### Step 4 - Generating results
 
 The Intelligent Museum
 ----------------------
