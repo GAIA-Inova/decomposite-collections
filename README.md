@@ -78,7 +78,80 @@ Amanda Chevtchouk Jurno, Amanda Vargas, Ana Paula Rodrigues Borges, Gabriel Pere
 Contemporary Art Museum (MAC – USP):
 Gustavo Tiago Aires
 
-### Step 2 - Creating the dataset
+### Step 2 - Creating the datasets
+
+Once we have the spreadsheet with all the bounding box information the next step is to crop the artworks to extract the images we want to use to train the GAN model. 
+In order to do that, there are a few Python scripts under the [`src` directory](src). 
+
+#### Structure
+
+- `src/constants.py`: constants to configure the scripts. Here you can define things like the project root, the directory with the artwork images, the output directories for the cropped images and other related stuff;
+- `src/cli.py`: the command line interface you'll call to read from the CSV spreadsheet, crop the images and generate the output csv;
+- `src/csv_parser.py`: helper functions to parse and validate the spreadsheet with the dataset information;
+
+If you want to customize the category columns, you'll have to edit `constants.CAPTIONS` dictionary to match your categorization.
+
+#### Requirements
+
+You'll need to have Python and pip installed in your computer. Once you have both, you'll need to install Python dependencies as follows:
+
+```
+$ pip install requests rows pillow tqdm click
+```
+
+#### Usage
+
+The `src/cli.py` file has a command called `bbox` that is responsible to crop the images using the bounding box coordinates and organize it under the directory defined by `constants.MOSAIC_DIR`. Here's how to use it:
+
+```
+$ python src/cli.py bbox bounding_box.csv
+```
+
+Besides organizing the artworks' cuts, it also creates a new CSV file that maps the final organization of the images. So, considering the row reference in the step 1, the `output.csv` file will look like:
+
+```
+Tombo,Categoria,Área,Títulos do objeto,Autor,Data,Técnica,Dimensões,Categoria Id,Imagem Id,Imagem
+1963.1.243,Fauna,"76,558,246,750",Costureiras,Tarsila do Amaral,1950 ,óleo sobre tela,"73,3 cm  x 100,2 cm ",fauna,1963_1_243.jpg,1963.1.243-fauna-00.jpg
+1963.1.243,Mulher Branca,"694,340,1173,872",Costureiras,Tarsila do Amaral,1950 ,óleo sobre tela,"73,3 cm  x 100,2 cm ",mulher_branca,1963_1_243.jpg,1963.1.243-mulher_branca-00.jpg
+1963.1.243,Mulher Branca,"190,137,478,723",Costureiras,Tarsila do Amaral,1950 ,óleo sobre tela,"73,3 cm  x 100,2 cm ",mulher_branca,1963_1_243.jpg,1963.1.243-mulher_branca-01.jpg
+1963.1.243,Mulher Branca,"362,358,725,871",Costureiras,Tarsila do Amaral,1950 ,óleo sobre tela,"73,3 cm  x 100,2 cm ",mulher_branca,1963_1_243.jpg,1963.1.243-mulher_branca-02.jpg
+1963.1.243,Mulher Branca,"728,162,934,421",Costureiras,Tarsila do Amaral,1950 ,óleo sobre tela,"73,3 cm  x 100,2 cm ",mulher_branca,1963_1_243.jpg,1963.1.243-mulher_branca-03.jpg
+1963.1.243,Mulher Branca,"1019,80,1178,453",Costureiras,Tarsila do Amaral,1950 ,óleo sobre tela,"73,3 cm  x 100,2 cm ",mulher_branca,1963_1_243.jpg,1963.1.243-mulher_branca-04.jpg
+1963.1.243,Mulher Branca,"468,70,739,396",Costureiras,Tarsila do Amaral,1950 ,óleo sobre tela,"73,3 cm  x 100,2 cm ",mulher_branca,1963_1_243.jpg,1963.1.243-mulher_branca-05.jpg
+1963.1.243,Mulher Branca,"61,32,261,350",Costureiras,Tarsila do Amaral,1950 ,óleo sobre tela,"73,3 cm  x 100,2 cm ",mulher_branca,1963_1_243.jpg,1963.1.243-mulher_branca-06.jpg
+1963.1.243,Mulher Branca,"711,93,858,270",Costureiras,Tarsila do Amaral,1950 ,óleo sobre tela,"73,3 cm  x 100,2 cm ",mulher_branca,1963_1_243.jpg,1963.1.243-mulher_branca-07.jpg
+1963.1.243,Mulher Branca,"471,33,653,299",Costureiras,Tarsila do Amaral,1950 ,óleo sobre tela,"73,3 cm  x 100,2 cm ",mulher_branca,1963_1_243.jpg,1963.1.243-mulher_branca-08.jpg
+1963.1.243,Mulher Branca,"220,88,352,351",Costureiras,Tarsila do Amaral,1950 ,óleo sobre tela,"73,3 cm  x 100,2 cm ",mulher_branca,1963_1_243.jpg,1963.1.243-mulher_branca-09.jpg
+1963.1.243,Mulher Negra,"883,96,1091,437",Costureiras,Tarsila do Amaral,1950 ,óleo sobre tela,"73,3 cm  x 100,2 cm ",mulher_negra,1963_1_243.jpg,1963.1.243-mulher_negra-00.jpg
+1963.1.243,Mulher Negra,"572,242,858,485",Costureiras,Tarsila do Amaral,1950 ,óleo sobre tela,"73,3 cm  x 100,2 cm ",mulher_negra,1963_1_243.jpg,1963.1.243-mulher_negra-01.jpg
+1963.1.243,Mulher Negra,"-1,233,253,528",Costureiras,Tarsila do Amaral,1950 ,óleo sobre tela,"73,3 cm  x 100,2 cm ",mulher_negra,1963_1_243.jpg,1963.1.243-mulher_negra-02.jpg
+```
+
+Each row in this file corresponds to a croped image and its respective information. Here are 2 examples of extraction from the previous image for the `Fauna` and `White woman` category:
+
+**Fauna**
+
+![Fauna example](images/1963.1.243-fauna-00.jpg)
+
+**White women**
+
+![Fauna example](images/1963.1.243-mulher_branca-00.jpg)
+![Fauna example](images/1963.1.243-mulher_branca-02.jpg)
+
+#### Results
+
+The previous process resulted in us having datasets organized by category per each museum. The amount of images are listed in the table bellow:
+
+| Images per Category/Museum | MP USP | MAC-USP |
+|----------------------------|--------|---------|
+| Sky                        | 305    | 95      |
+| Flora                      | 602    | 102     |
+| Fauna                      | 332    | 130     |
+| White women                | 145    | 269     |
+| White men                  | 510    | 284     |
+| Black women                | 38     | 77      |
+| Black men                  | 199    | 89      |
+| Indigenous                 | 73     | 13      |
 
 ### Step 3 - Training the GANs
 
