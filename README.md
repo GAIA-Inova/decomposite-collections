@@ -5,14 +5,14 @@
 
 Bernardo Fontes, source code repository, 2021.
 
-»(De)composite Collections« is an ongoing investigation into the formation and updates of the colonialist gaze in museum collections. Developed in the context of the intelligent.museum residency, its starting point are artistic collections organized in the first half of the 20th century.
+»(De)composite Collections« is an ongoing investigation by Giselle Beiguelman, Bruno Moreschi and Bernardo Fontes into the formation and updates of the colonialist gaze in museum collections. Developed in the context of the intelligent.museum residency, its starting point are artistic collections organized in the first half of the 20th century.
 
-This code has been developed by Bernardo Fontes, as part of the [»The Intelligent Museum«](#the-intelligent-museum). 
-Funded by the Digital Culture Programme of the Kulturstiftung des Bundes (German Federal Cultural Foundation). 
+This code has been developed by Bernardo Fontes, as part of the [»The Intelligent Museum«](#the-intelligent-museum).
+Funded by the Digital Culture Programme of the Kulturstiftung des Bundes (German Federal Cultural Foundation).
 Funded by the Beauftragte der Bundesregierung für Kultur und Medien (Federal Government Commissioner for Culture and Media).
 Supported by the Faculty of Architecture and Urbanism of the University of São Paulo (FAU-USP), C4Ai – INOVA-USP and GAIA.
 
-For information on usage and redistribution, and for a DISCLAIMER OF ALL WARRANTIES, see the file, [LICENSE.txt](LICENSE.txt), in this repository. 
+For information on usage and redistribution, and for a DISCLAIMER OF ALL WARRANTIES, see the file, [LICENSE.txt](LICENSE.txt), in this repository.
 BSD Simplified License.
 
 Description
@@ -45,9 +45,9 @@ We strongly recommend you to try to reproduce this process with other open catal
 ### Step 1 - Organizing the artworks information
 
 In this step we had to view each image from the museum catalog and give meaning to specific areas. Or, in computer vision terms, to define an image's [bounding boxes](https://keymakr.com/blog/what-are-bounding-boxes/).
-These areas would them be cut and grouped by their meaning, what we call categories. 
+These areas would them be cut and grouped by their meaning, what we call categories.
 
-This step's final output was a CSV spreadsheet populated by the people who worked on this analysis. The spreadsheet contains the many possible categories' bounding box per image. 
+This step's final output was a CSV spreadsheet populated by the people who worked on this analysis. The spreadsheet contains the many possible categories' bounding box per image.
 The bounding boxes are defined by pixels coordinates, and we used [Image Map Generator website](https://www.image-map.net/) to help us to define them.
 Following we have the spreadsheet's header and one row as an example:
 
@@ -56,8 +56,8 @@ Tombo,Títulos do objeto,Autor,Data,Técnica,Dimensões,CONTROLE,Céu,Fauna,Flor
 1963.1.243,Costureiras,Tarsila do Amaral,1950 ,óleo sobre tela,"73,3 cm  x 100,2 cm ",,,"76,558,246,750",,"1,359,220,741&-1,662,278,872",,,,"694,340,1173,872&190,137,478,723&362,358,725,871&728,162,934,421&1019,80,1178,453&468,70,739,396&61,32,261,350&711,93,858,270&471,33,653,299&220,88,352,351",,"883,96,1091,437&572,242,858,485&-1,233,253,528",,"883,96,1091,437&572,242,858,485&-1,233,253,528&694,340,1173,872&190,137,478,723&362,358,725,871&728,162,934,421&1019,80,1178,453&468,70,739,396&61,32,261,350&711,93,858,270&471,33,653,299&220,88,352,351",,,,,,
 ```
 
-The row contains columns with information about the artwork, such as the title, the author, the painting technique used, and also one column per category that we want to crop. 
-The values under the categories columns are the 4 bounding box coordinates that should be used to cut the image. 
+The row contains columns with information about the artwork, such as the title, the author, the painting technique used, and also one column per category that we want to crop.
+The values under the categories columns are the 4 bounding box coordinates that should be used to cut the image.
 The artwork image in the example is the following one ("Costureiras", by the brazilian artist [Tarsila do Amaral](https://en.wikipedia.org/wiki/Tarsila_do_Amaral)):
 
 ![Costureiras, Tarsila do Amaral](images/1963_1_243.jpg)
@@ -66,10 +66,10 @@ So, in the previous example, it limits a `Fauna` bounding box using the followin
 
 - 76 (upper left)
 - 558 (bottom left)
-- 246 (upper right) 
+- 246 (upper right)
 - 750 (bottom right)
 
-If there are more than one bounding box per category, the coordinates then get separated by the `&` character, as we have in the column for `Mulher Branca (White woman)`: `694,340,1173,872&190,137,478,723&362,358,725,871&728,162,934,421&1019,80,1178,453&468,70,739,396&61,32,261,350&711,93,858,270&471,33,653,299&220,88,352,351`. 
+If there are more than one bounding box per category, the coordinates then get separated by the `&` character, as we have in the column for `Mulher Branca (White woman)`: `694,340,1173,872&190,137,478,723&362,358,725,871&728,162,934,421&1019,80,1178,453&468,70,739,396&61,32,261,350&711,93,858,270&471,33,653,299&220,88,352,351`.
 As you can see, there were defined 10 bounding boxes for white woman in this artwork.
 
 We acknowledge the work of our students and researchers in organizing the spreadsheets (one per museum) and helping with the preparation work to build the dataset.
@@ -82,8 +82,8 @@ Gustavo Tiago Aires
 
 ### Step 2 - Creating the datasets
 
-Once we have the spreadsheet with all the bounding boxes' information, the next step was to crop the artworks to extract the images we want to use to train the GAN model. 
-In order to do that, we used a few Python scripts that are placed under the [`src` directory](src). 
+Once we have the spreadsheet with all the bounding boxes' information, the next step was to crop the artworks to extract the images we want to use to train the GAN model.
+In order to do that, we used a few Python scripts that are placed under the [`src` directory](src).
 
 #### Structure
 
@@ -157,7 +157,7 @@ The previous process resulted in us having datasets organized by category for ea
 
 ### Step 3 - Training and using the GANs
 
-The next and final step was to train the 16 GAN, one for each dataset from the previous table, and generate the results. 
+The next and final step was to train the 16 GAN, one for each dataset from the previous table, and generate the results.
 
 To facilitate and standardize this process, we used [Runway app](https://runwayml.com/) ([this video](https://www.youtube.com/watch?v=vM8Cv8CLmr0) has a demo on how to do that). Each GAN we created is a result of a 8000 steps training of a [StyleGAN2](https://github.com/NVlabs/stylegan2) starting on a pre-trained model of botanical illustrations provided by Runway.
 
