@@ -21,12 +21,12 @@ Description
 ### Summary
 
 This README has the purpose to cover the required technical efforts in order to generate the results analyzed by the project.
-You can find a more detailed and conceptualized explanation about it in ZKM website, both in [German](https://zkm.de/de/decomposite-collections) or [English](https://zkm.de/en/decomposite-collections) versions.
+A more detailed and conceptual explanation of this can be found on the ZKM website, both in [German](https://zkm.de/de/decomposite-collections) or [English](https://zkm.de/en/decomposite-collections).
 
 The overall technical goal was to train a dozen [GAN models](https://en.wikipedia.org/wiki/Generative_adversarial_network) to synthesize new images based on the catalog of 2 important Brazilian museums as the train dataset.
 The museums are the Museu Paulista (MP USP) and the Contemporary Art Museum (MAC – USP).
-Each GAN was trained with dataset composed by grouped cuts from the original artworks from each museum. Each group represent a category we would like to investigate and experiment on top of.
-We defined a dozen of categories, but the ones used in this work are:
+Each GAN was trained on a dataset consisting of grouped cuts of original artworks from each museum. Each group represents a category we would like to investigate and experiment on top of.
+We defined a dozen of categories, but the ones used in (De)composite Collections investigation are:
 
 - Sky
 - Flora
@@ -44,12 +44,12 @@ We strongly recommend you to try to reproduce this process with other open catal
 
 ### Step 1 - Organizing the artworks information
 
-In this step we had to view each image from the museum catalog and give meaning to specific areas. Or, in computer vision terms, to define an image's [bounding boxes](https://keymakr.com/blog/what-are-bounding-boxes/).
-These areas would them be cut and grouped by their meaning, what we call categories.
+In this step we had to view each image from the museum catalog and give meaning to specific areas. Or, in computer vision terms, to define the [bounding boxes](https://keymakr.com/blog/what-are-bounding-boxes/) of an image.
+These areas would then be cut and grouped by their meaning into categories.
 
-This step's final output was a CSV spreadsheet populated by the people who worked on this analysis. The spreadsheet contains the many possible categories' bounding box per image.
+This step's final output was a CSV spreadsheet populated by the people who worked on this analysis. The spreadsheet may contain several bounding boxes per image of alternating categories.
 The bounding boxes are defined by pixels coordinates, and we used [Image Map Generator website](https://www.image-map.net/) to help us to define them.
-Following we have the spreadsheet's header and one row as an example:
+Below you will find the header of the preadsheet and one line as an example:
 
 ```csv
 Tombo,Títulos do objeto,Autor,Data,Técnica,Dimensões,CONTROLE,Céu,Fauna,Flora,Artefatos domesticos,Homem Branco,Homem Indigena,Homem Negro,Mulher Branca,Mulher Indigena,Mulher Negra,TrabalhadorE rural,TrabalhadorE urbano,Paisagem Rural,Paisagem Urbana,Res. abastada,Res. pobre,Igreja
@@ -57,7 +57,7 @@ Tombo,Títulos do objeto,Autor,Data,Técnica,Dimensões,CONTROLE,Céu,Fauna,Flor
 ```
 
 The row contains columns with information about the artwork, such as the title, the author, the painting technique used, and also one column per category that we want to crop.
-The values under the categories columns are the 4 bounding box coordinates that should be used to cut the image.
+The values in the category columns are the 4 bounding box coordinates that define the crop.
 The artwork image in the example is the following one ("Costureiras", by the brazilian artist [Tarsila do Amaral](https://en.wikipedia.org/wiki/Tarsila_do_Amaral)):
 
 ![Costureiras, Tarsila do Amaral](images/1963_1_243.jpg)
@@ -95,7 +95,7 @@ If you want to customize the category columns, you'll have to edit `constants.CA
 
 #### Requirements
 
-You'll need to have [Python](https://www.python.org/) and [pip](https://pypi.org/project/pip/) installed in your computer. Once you have both, you'll need to install Python dependencies as follows:
+You'll need to have [Python](https://www.python.org/) and [pip](https://pypi.org/project/pip/) installed on your computer. Once you have both, you'll need to install Python dependencies as follows:
 
 ```
 $ pip install requests rows pillow tqdm click
@@ -142,7 +142,8 @@ Each row in this file corresponds to a croped image and its respective informati
 
 #### Results
 
-The previous process resulted in us having datasets organized by category for each museum. The amount of resulted images is listed in the table bellow:
+The previous process organizes each dataset by category for each museum.
+In our work, the total amount of cropped images per dataset can be found in the following table.
 
 | Images per Category/Museum | MP USP | MAC-USP |
 |----------------------------|--------|---------|
@@ -161,7 +162,7 @@ The next and final step was to train the 16 GAN, one for each dataset from the p
 
 To facilitate and standardize this process, we used [Runway app](https://runwayml.com/) ([this video](https://www.youtube.com/watch?v=vM8Cv8CLmr0) has a demo on how to do that). Each GAN we created is a result of a 8000 steps training of a [StyleGAN2](https://github.com/NVlabs/stylegan2) starting on a pre-trained model of botanical illustrations provided by Runway.
 
-With the trained model, we generate 200 images per category using the same truncation (0.65) and extract the results we used in the project. Bellow, you can see an overview of the gallery for the model trained with `Sky` images from MAC-USP:
+With the trained model, we generated 200 images per category using the same truncation (0.65) and extracted the results we used in the project. Below, you can see an overview of the gallery for the model trained with `Sky` images from MAC-USP:
 
 ![Sky MAC-USP](images/ceu-mac-checkpoint.jpg)
 
